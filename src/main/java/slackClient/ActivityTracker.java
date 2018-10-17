@@ -153,7 +153,6 @@ public class ActivityTracker {
 			
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block f71935c67654a35d392eb22ca0e9d6e27d62f4b4
 			e.printStackTrace();
 		}
 		
@@ -233,9 +232,6 @@ public class ActivityTracker {
 			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(fXmlFile);
 
-			// optional, but recommended
-			// read this -
-			// http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
 			doc.getDocumentElement().normalize();
 
 			NodeList nList = doc.getElementsByTagName("fileEvent");
