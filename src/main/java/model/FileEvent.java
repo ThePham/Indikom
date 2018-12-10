@@ -1,5 +1,7 @@
 package model;
 
+import java.util.ArrayList;
+
 public class FileEvent {
 	private String fileId;
 	private String duration;
@@ -7,9 +9,27 @@ public class FileEvent {
 	private String className;
 	private String projectName;
 	private String packageName;
+	private double weightedDuration;
+	private ArrayList<String> keywords;
 	
 	public String getClassName() {
 		return className;
+	}
+
+	public double getWeightedDuration() {
+		return weightedDuration;
+	}
+
+	public void setWeightedDuration(double weightedDuration) {
+		this.weightedDuration = weightedDuration;
+	}
+
+	public ArrayList<String> getKeywords() {
+		return keywords;
+	}
+
+	public void setKeywords(ArrayList<String> keywords) {
+		this.keywords = keywords;
 	}
 
 	public void setClassName(String className) {

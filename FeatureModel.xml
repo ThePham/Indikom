@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<featureModel>
+    <properties/>
+    <struct>
+        <and abstract="true" mandatory="true" name="Instant Messaging Application">
+            <alt abstract="true" mandatory="true" name="Message Filter ">
+                <feature name="No Filtering"/>
+                <or abstract="true" name="Filtering Based on Work Context">
+                    <or abstract="true" name="Developer Activity">
+                        <feature name="Periodic Update"/>
+                        <feature name="User Triggered Update"/>
+                    </or>
+                    <feature name="Repository"/>
+                    <feature name="User Input"/>
+                </or>
+            </alt>
+            <or abstract="true" mandatory="true" name="Message Notification">
+                <feature name="Text to Speech"/>
+                <feature name="Text Window"/>
+            </or>
+        </and>
+    </struct>
+    <constraints/>
+    <calculations Auto="true" Constraints="true" Features="true" Redundant="true" Tautology="true"/>
+    <comments/>
+    <featureOrder userDefined="false"/>
+</featureModel>

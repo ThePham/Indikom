@@ -24,11 +24,17 @@ import net.jeremybrooks.knicker.dto.TokenStatus;
 public class App 
 {
 	static String botAccessToken;
+	static String rabbitLocation;
+	
+	static String GHToken;
+	static String GHUsername;
+	
+	static boolean useWordnik = false;
 	
     public static void main( String[] args )
     {
         
-    	//Get bot access token from /users/user/.indikom
+    	//ziskanie bot access tokenu zo suboru connection.txt v priecinku /users/user/.indikom
     	File file = new File(getUserDataDirectory() + "connection.txt");
 		if (file.exists() == false){
 			ConnectionWindow conWin = new ConnectionWindow();
@@ -42,6 +48,26 @@ public class App
 				BufferedReader br = new BufferedReader(connectionFileReader);
 				
 				botAccessToken = br.readLine();
+				rabbitLocation = br.readLine();
+				GHUsername = br.readLine();
+				GHToken = br.readLine();
+				
+				//Wordnik 
+		    	//System.setProperty("WORDNIK_API_KEY" , "95ce83573b741a57740080102280a90a94fc04e08f9f8abb4");
+				String wordnikApi = br.readLine();
+				if (wordnikApi.length() > 2) {
+					System.setProperty("WORDNIK_API_KEY" , wordnikApi);
+					useWordnik = true;
+				}
+				else 
+					useWordnik = false;
+		    	
+		    	/*
+		    	if (System.getProperty("WORDNIK_API_KEY").isEmpty()) {
+		    		System.setProperty("WORDNIK_API_KEY" , "95ce83573b741a57740080102280a90a94fc04e08f9f8abb4");
+		    	}
+		    	*/
+
 			} catch (FileNotFoundException e1) {
 				System.out.println("The file with bot access token not found, exiting.");
 				System.exit(1);
@@ -49,31 +75,32 @@ public class App
 				System.out.println("Error while reading bot access token from file connection.txt, exiting.");
 				System.exit(1);
 			}
-
-			/* Activity Tracking WIP
+	    	
+	    	//ActivityTracker.textToSpeech("This is a test message.");
+	    	//ActivityTracker.textToSpeech("This is so sad, alexa play despacito.");	
+			
 			Timer time = new Timer(); 
 			ActivityTrackingTask trackingTask = new ActivityTrackingTask(); 
-			time.schedule(trackingTask, 0, 1000000000); 
-			*/
+			time.schedule(trackingTask, 0, 600*1000); 
 			
-			/*
-			//Wordnik 
-	    	System.setProperty("WORDNIK_API_KEY" , "API_KEY");
-	    	
-	    	// check the status of the API key
-	    	TokenStatus status = null;
-			try {
-				status = AccountApi.apiTokenStatus();
-			} catch (KnickerException e) {
-				e.printStackTrace();
-			}
-	    	if (status.isValid()) {
-	    	    System.out.println("API key is valid.");
-	    	} else {
-	    	    System.out.println("API key is invalid!");
+	    	if (useWordnik) {
+		    	// check the status of the API key
+		    	TokenStatus status = null;
+				try {
+					status = AccountApi.apiTokenStatus();
+				} catch (KnickerException e) {
+					e.printStackTrace();
+				}
+		    	if (status.isValid()) {
+		    	    System.out.println("API key is valid.");
+		    	} else {
+		    	    System.out.println("API key is invalid!");
+		    	    useWordnik = false;
+		    	}
 	    	}
-	    	*/
-			
+	    	else 
+	    		System.out.println("Not using Wordnik thesaurus");
+	    	
 	        EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					try {
@@ -95,5 +122,21 @@ public class App
     
     public static String getUserDataDirectory() {
 	    return System.getProperty("user.home") + File.separator + ".indikom" + File.separator;
+	}
+    
+    public static String getRabbitLocation() {
+	    return rabbitLocation;
+	}
+    
+    public static String getGHUsername() {
+	    return GHUsername;
+	}
+    
+    public static String getGHToken() {
+	    return GHToken;
+	}
+    
+    public static boolean getUseWordnik() {
+	    return useWordnik;
 	}
 }

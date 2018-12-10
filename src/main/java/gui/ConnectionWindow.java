@@ -25,6 +25,10 @@ public class ConnectionWindow extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
+	private JTextField textFieldRabbit;
+	private JTextField textFieldGHUsername;
+	private JTextField textFieldGHToken;
+	private JTextField textFieldWordnik;
 
 	
 	/**
@@ -43,7 +47,26 @@ public class ConnectionWindow extends JFrame {
 		textField = new JTextField();
 		textField.setColumns(10);
 		
+		textFieldRabbit = new JTextField();
+		textFieldRabbit.setColumns(10);
+		
+		textFieldGHUsername = new JTextField();
+		textFieldGHUsername.setColumns(10);
+		
+		textFieldGHToken = new JTextField();
+		textFieldGHToken.setColumns(10);
+		
+		textFieldWordnik = new JTextField();
+		textFieldWordnik.setColumns(10);
+			
 		JLabel lblToken = new JLabel("Token:");
+		
+		JLabel lblTokenRabbit = new JLabel("Rabbit location (e.g. /Users/phamv/Rabbit/C.Users.phamv.workspace/):");
+		
+		JLabel lblgithubUser = new JLabel("Github username:");
+		JLabel lblgithubToken = new JLabel("Github oauth token:");
+		
+		JLabel lblWordnik= new JLabel("Wordnik API key (leave empty to not use Wordnik thesaurus):");
 		
 		JButton btnOk = new JButton("OK");
 		
@@ -61,6 +84,22 @@ public class ConnectionWindow extends JFrame {
 					.addComponent(lblToken)
 					.addContainerGap())
 				.addComponent(textField, GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblTokenRabbit)
+						.addContainerGap())
+				.addComponent(textFieldRabbit, GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblgithubUser)
+						.addContainerGap())
+				.addComponent(textFieldGHUsername, GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblgithubToken)
+						.addContainerGap())
+				.addComponent(textFieldGHToken, GroupLayout.DEFAULT_SIZE, 724, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblWordnik)
+						.addContainerGap())
+				.addComponent(textFieldWordnik, GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -68,6 +107,18 @@ public class ConnectionWindow extends JFrame {
 					.addComponent(lblToken)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(textField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblTokenRabbit)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldRabbit, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblgithubUser)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldGHUsername, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblgithubToken)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldGHToken, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblWordnik)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldWordnik, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnOk)
@@ -81,8 +132,20 @@ public class ConnectionWindow extends JFrame {
 			if (file.exists() == true){
 				FileReader connectionFileReader = new FileReader(file);
 				BufferedReader br = new BufferedReader(connectionFileReader);
-				String botAccessToken = br.readLine();
-				textField.setText(botAccessToken);
+				String line = br.readLine();
+				textField.setText(line);
+				
+				line = br.readLine();
+				textFieldRabbit.setText(line);
+				
+				line = br.readLine();
+				textFieldGHUsername.setText(line);
+				
+				line = br.readLine();
+				textFieldGHToken.setText(line);
+				
+				line = br.readLine();
+				textFieldWordnik.setText(line);
 			}
 		} catch (Exception ex) {
 			
@@ -105,7 +168,11 @@ public class ConnectionWindow extends JFrame {
 				else{
 					try {
 						fw = new FileWriter(file);
-						fw.write(textField.getText());
+						fw.write(textField.getText() + System.lineSeparator());
+						fw.write(textFieldRabbit.getText() + System.lineSeparator());
+						fw.write(textFieldGHUsername.getText() + System.lineSeparator());
+						fw.write(textFieldGHToken.getText() + System.lineSeparator());
+						fw.write(textFieldWordnik.getText() + System.lineSeparator());
 						
 					} catch (IOException e1) {
 						System.out.println("Unable to write connection token.");

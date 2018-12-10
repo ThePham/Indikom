@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -36,7 +38,10 @@ import com.ullink.slack.simpleslackapi.SlackSession;
 import com.ullink.slack.simpleslackapi.events.SlackMessagePosted;
 import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 
+import model.FileEvent;
+import slackClient.ActivityTracker;
 import slackClient.Connection;
+import slackClient.MSTranslator;
 import slackClient.MessageObject;
 import slackClient.MessageProcessing;
 import slackClient.Translator;
@@ -208,51 +213,97 @@ public class GuiLauncher implements Observer{
 		SlackMessagePosted incomingMessage = (SlackMessagePosted) arg;
 		String[] timeInMilisArray = splitStringByDot(incomingMessage.getTimestamp());
 		String timeInMilis = timeInMilisArray[0];
-		try {
-			textArea.setText(textArea.getText() + incomingMessage.getSender().getUserName() + " [" + millisToDate3(timeInMilis) + "]" + ":\n" + "> EN: " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()) + "\n");
-			textArea.setText(textArea.getText() + "> SK: " + incomingMessage.getMessageContent() + "\n");
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}	
 		
-		// TEXT TO SPEECH
-		try {
-			slackClient.ActivityTracker.textToSpeech(incomingMessage.getSender().getUserName() + " said " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()));
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		
+		//Message filtering
+		ArrayList<FileEvent> files = ActivityTracker.getFiles();
+		ArrayList<String> keywords = new ArrayList<String>();
+		
+		for (FileEvent f : files) {
+			for (String s : f.getKeywords())
+				keywords.add(s);
 		}
 		
-		receivedMessages++;
-					
-		MessageProcessing mpr = new MessageProcessing();
-		MessageObject msg = new MessageObject();
-		msg = mpr.getFinalMessage(incomingMessage.getMessageContent(), receivedMessages);		
 		
-		if (true){
-			JFrame AutoMessageFrame = new JFrame();
-			AutoMessageFrame.setUndecorated(true);
-			AutoMessageFrame.getContentPane().add(new AutoMessage(incomingMessage.getMessageContent(), msg, incomingMessage.getSender().getUserName()));
-			AutoMessageFrame.setBounds(100, 100, 450, 300);
-			AutoMessageFrame.setOpacity(0.6f);
-			AutoMessageFrame.setLocationRelativeTo(null);
-			AutoMessageFrame.setAlwaysOnTop(true);
-			
-			Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-			int x = (int) ((dimension.getWidth() - AutoMessageFrame.getWidth()) - (AutoMessageFrame.getWidth()/4));
-		    int y = (int) ((dimension.getHeight() - AutoMessageFrame.getHeight()) - (AutoMessageFrame.getHeight()/4));
-			AutoMessageFrame.setLocation(x, y);
-			AutoMessageFrame.setVisible(true);
-			
-			
+		try {
+			//System.out.println(slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()));
+			System.out.println(MSTranslator.callTranslate(incomingMessage.getMessageContent()));
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		
+		textArea.setText(textArea.getText() + "> SK: " + incomingMessage.getSender().getUserName() + ": " + incomingMessage.getMessageContent() + "\n");
+		textArea.setText(textArea.getText() + "> EN: " + incomingMessage.getSender().getUserName() + ": " + MSTranslator.callTranslate(incomingMessage.getMessageContent()) + "\n");
+		
+		for (String s : keywords) {
 			try {
-				TimeUnit.SECONDS.sleep(6);
-			} catch (InterruptedException e) {
+				if (incomingMessage.getMessageContent().toLowerCase().contains(s.toLowerCase()) || 
+						MSTranslator.callTranslate(incomingMessage.getMessageContent()).toLowerCase().contains(s.toLowerCase()) ) {
+				//if (incomingMessage.getMessageContent().toLowerCase().contains(s.toLowerCase()) ) {
+					/*
+					try {
+						//textArea.setText(textArea.getText() + incomingMessage.getSender().getUserName() + " [" + millisToDate3(timeInMilis) + "]" + ":\n" + "> EN: " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()) + "\n");
+						textArea.setText(textArea.getText() + "> SK: " + incomingMessage.getMessageContent() + "\n");
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}	
+					*/
+
+					/*
+					// TEXT TO SPEECH
+					try {
+						slackClient.ActivityTracker.textToSpeech(incomingMessage.getSender().getUserName() + " said " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()));
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					*/
+					
+					receivedMessages++;
+								
+					MessageProcessing mpr = new MessageProcessing();
+					MessageObject msg = new MessageObject();
+					msg = mpr.getFinalMessage(incomingMessage.getMessageContent(), receivedMessages);		
+					
+					if (true){
+						JFrame AutoMessageFrame = new JFrame();
+						AutoMessageFrame.setUndecorated(true);
+						AutoMessageFrame.getContentPane().add(new AutoMessage(incomingMessage.getMessageContent(), msg, incomingMessage.getSender().getUserName()));
+						AutoMessageFrame.setBounds(100, 100, 450, 300);
+						AutoMessageFrame.setOpacity(0.6f);
+						AutoMessageFrame.setLocationRelativeTo(null);
+						AutoMessageFrame.setAlwaysOnTop(true);
+						
+						Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+						int x = (int) ((dimension.getWidth() - AutoMessageFrame.getWidth()) - (AutoMessageFrame.getWidth()/4));
+					    int y = (int) ((dimension.getHeight() - AutoMessageFrame.getHeight()) - (AutoMessageFrame.getHeight()/4));
+						AutoMessageFrame.setLocation(x, y);
+						AutoMessageFrame.setVisible(true);
+						
+						
+						try {
+							TimeUnit.SECONDS.sleep(6);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						AutoMessageFrame.dispose();
+						
+						
+					}
+					break;
+				}
+			} catch (HeadlessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			AutoMessageFrame.dispose();
-			
 			
 		}
 		
