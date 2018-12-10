@@ -172,9 +172,8 @@ public class ActivityTracker {
 			GitHubClient client = new GitHubClient();
 			client.setCredentials("ThePham", "GitHubPassword456");
 			
-<<<<<<< HEAD
 		} catch (IOException e) {
-=======
+
 			RepositoryService service = new RepositoryService();
 			try {
 				for (Repository repo : service.getRepositories("ThePham"))
@@ -200,7 +199,7 @@ public class ActivityTracker {
 				/*
 				//Github tracking 2
 				try {	
-					//GitHub github = GitHub.connect("ThePham", "ce1f959d9c041b3bf1687c11d51a38428c0e7eab");
+					//GitHub github = GitHub.connect("ThePham", "");
 					GitHub github = GitHub.connect(App.getGHUsername(), App.getGHToken());
 					//GitHub github = GitHub.connect("", "");
 					//System.out.println(github.getMyself().getLogin());		
@@ -228,7 +227,7 @@ public class ActivityTracker {
 					
 					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block f71935c67654a35d392eb22ca0e9d6e27d62f4b4
+					// TODO Auto-generated catch block 
 					e.printStackTrace();
 				}
 				*/

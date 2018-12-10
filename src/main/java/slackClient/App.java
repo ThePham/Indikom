@@ -53,7 +53,7 @@ public class App
 				GHToken = br.readLine();
 				
 				//Wordnik 
-		    	//System.setProperty("WORDNIK_API_KEY" , "95ce83573b741a57740080102280a90a94fc04e08f9f8abb4");
+		    	//System.setProperty("WORDNIK_API_KEY" , "");
 				String wordnikApi = br.readLine();
 				if (wordnikApi.length() > 2) {
 					System.setProperty("WORDNIK_API_KEY" , wordnikApi);
@@ -64,7 +64,7 @@ public class App
 		    	
 		    	/*
 		    	if (System.getProperty("WORDNIK_API_KEY").isEmpty()) {
-		    		System.setProperty("WORDNIK_API_KEY" , "95ce83573b741a57740080102280a90a94fc04e08f9f8abb4");
+		    		System.setProperty("WORDNIK_API_KEY" , "");
 		    	}
 		    	*/
 

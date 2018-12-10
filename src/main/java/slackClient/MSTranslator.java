@@ -28,7 +28,7 @@ public class MSTranslator {
 // **********************************************
 
 // Replace the subscriptionKey string value with your valid subscription key.
-    private static String subscriptionKey = "9449493227a3402fa8c5231a86a4d185";
+    private static String subscriptionKey = "";
 
     private static String host = "https://api.cognitive.microsofttranslator.com";
     private static String translatePath = "/translate?api-version=3.0";
