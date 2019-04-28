@@ -6,6 +6,8 @@ import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,6 +42,7 @@ import com.ullink.slack.simpleslackapi.impl.SlackSessionFactory;
 
 import model.FileEvent;
 import slackClient.ActivityTracker;
+import slackClient.App;
 import slackClient.Connection;
 import slackClient.MSTranslator;
 import slackClient.MessageObject;
@@ -50,6 +53,7 @@ import javax.swing.JTextArea;
 
 import slackClient.Connection;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 public class GuiLauncher implements Observer{
 
@@ -180,10 +184,8 @@ public class GuiLauncher implements Observer{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Configuration configWindow = new Configuration();
-				configWindow.setVisible(true);
-				
-			}
-			
+				configWindow.setVisible(true);		
+			}		
 		});
 		
 		mntmConnectionSettings.addActionListener(new ActionListener(){
@@ -191,10 +193,8 @@ public class GuiLauncher implements Observer{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ConnectionWindow conWin = new ConnectionWindow();
-				conWin.setVisible(true);
-				
-			}
-			
+				conWin.setVisible(true);		
+			}		
 		});
 		
 		mntmQuit.addActionListener(new ActionListener(){
@@ -203,8 +203,7 @@ public class GuiLauncher implements Observer{
 			public void actionPerformed(ActionEvent arg0) {
 				frmIndikom.dispose();
 				System.exit(0);
-			}
-			
+			}	
 		});
 	}
 
@@ -214,7 +213,6 @@ public class GuiLauncher implements Observer{
 		String[] timeInMilisArray = splitStringByDot(incomingMessage.getTimestamp());
 		String timeInMilis = timeInMilisArray[0];
 		
-		
 		//Message filtering
 		ArrayList<FileEvent> files = ActivityTracker.getFiles();
 		ArrayList<String> keywords = new ArrayList<String>();
@@ -223,85 +221,94 @@ public class GuiLauncher implements Observer{
 			for (String s : f.getKeywords())
 				keywords.add(s);
 		}
-		
-		
+			
 		try {
-			//System.out.println(slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()));
 			System.out.println(MSTranslator.callTranslate(incomingMessage.getMessageContent()));
 		} catch (Exception e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
 		
 		textArea.setText(textArea.getText() + "> SK: " + incomingMessage.getSender().getUserName() + ": " + incomingMessage.getMessageContent() + "\n");
 		textArea.setText(textArea.getText() + "> EN: " + incomingMessage.getSender().getUserName() + ": " + MSTranslator.callTranslate(incomingMessage.getMessageContent()) + "\n");
 		
+		String translatedMessage = "";
+		
 		for (String s : keywords) {
 			try {
-				if (incomingMessage.getMessageContent().toLowerCase().contains(s.toLowerCase()) || 
-						MSTranslator.callTranslate(incomingMessage.getMessageContent()).toLowerCase().contains(s.toLowerCase()) ) {
-				//if (incomingMessage.getMessageContent().toLowerCase().contains(s.toLowerCase()) ) {
-					/*
+				if (incomingMessage.getSender().getUserName() != App.getSlackUsername()) { //Don't display messages from user					
+					
+					//Translate message
 					try {
-						//textArea.setText(textArea.getText() + incomingMessage.getSender().getUserName() + " [" + millisToDate3(timeInMilis) + "]" + ":\n" + "> EN: " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()) + "\n");
-						textArea.setText(textArea.getText() + "> SK: " + incomingMessage.getMessageContent() + "\n");
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}	
-					*/
-
-					/*
-					// TEXT TO SPEECH
-					try {
-						slackClient.ActivityTracker.textToSpeech(incomingMessage.getSender().getUserName() + " said " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()));
-					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						translatedMessage = MSTranslator.callTranslate(incomingMessage.getMessageContent());
 					}
-					*/
-					
-					receivedMessages++;
-								
-					MessageProcessing mpr = new MessageProcessing();
-					MessageObject msg = new MessageObject();
-					msg = mpr.getFinalMessage(incomingMessage.getMessageContent(), receivedMessages);		
-					
-					if (true){
-						JFrame AutoMessageFrame = new JFrame();
-						AutoMessageFrame.setUndecorated(true);
-						AutoMessageFrame.getContentPane().add(new AutoMessage(incomingMessage.getMessageContent(), msg, incomingMessage.getSender().getUserName()));
-						AutoMessageFrame.setBounds(100, 100, 450, 300);
-						AutoMessageFrame.setOpacity(0.6f);
-						AutoMessageFrame.setLocationRelativeTo(null);
-						AutoMessageFrame.setAlwaysOnTop(true);
-						
-						Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-						int x = (int) ((dimension.getWidth() - AutoMessageFrame.getWidth()) - (AutoMessageFrame.getWidth()/4));
-					    int y = (int) ((dimension.getHeight() - AutoMessageFrame.getHeight()) - (AutoMessageFrame.getHeight()/4));
-						AutoMessageFrame.setLocation(x, y);
-						AutoMessageFrame.setVisible(true);
-						
-						
+					catch (Exception e) {
+						e.printStackTrace();
+					}
+					if (incomingMessage.getMessageContent().toLowerCase().contains(s.toLowerCase()) || translatedMessage.toLowerCase().contains(s.toLowerCase())
+							) {
+	
+						/*
+						// TEXT TO SPEECH
 						try {
-							TimeUnit.SECONDS.sleep(6);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+							slackClient.ActivityTracker.textToSpeech(incomingMessage.getSender().getUserName() + " said " + slackClient.Translator.callUrlAndParseResult("sk", "en", incomingMessage.getMessageContent()));
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-						AutoMessageFrame.dispose();
+						*/
 						
+						receivedMessages++;
+									
+						MessageProcessing mpr = new MessageProcessing();
+						MessageObject msg = new MessageObject();
+						msg = mpr.getFinalMessage(incomingMessage.getMessageContent(), receivedMessages);		
 						
+						if (true){
+							JFrame AutoMessageFrame = new JFrame();
+							
+							/*
+							JButton btnYes = new JButton("Yes");	
+							JButton btnNo = new JButton("No");
+							
+							JPanel panel = new JPanel();
+		
+							panel.add(btnYes);
+							panel.add(btnNo);
+							
+							btnYes.setBounds(400, 40, 30, 20);
+							btnNo.setBounds(400, 60, 30, 20);
+							
+							AutoMessageFrame.getContentPane().add(panel);
+							//AutoMessageFrame.getContentPane().add(btnNo);			
+							*/
+							
+							AutoMessageFrame.setUndecorated(true);
+							AutoMessageFrame.getContentPane().add(new AutoMessage(incomingMessage.getMessageContent() + "\n[Press LMB if relevant, RMB if irrelevant]", msg, incomingMessage.getSender().getUserName()));
+							AutoMessageFrame.setBounds(100, 100, 450, 300);
+							AutoMessageFrame.setOpacity(0.6f);
+							AutoMessageFrame.setLocationRelativeTo(null);
+							AutoMessageFrame.setAlwaysOnTop(true);
+							
+							Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+							int x = (int) ((dimension.getWidth() - AutoMessageFrame.getWidth()) - (AutoMessageFrame.getWidth()/4));
+						    int y = (int) ((dimension.getHeight() - AutoMessageFrame.getHeight()) - (AutoMessageFrame.getHeight()/4));
+							
+							AutoMessageFrame.setLocation(x, y);
+							AutoMessageFrame.setVisible(true);
+							AutoMessageFrame.setFocusable(false);	
+						    
+							try {
+								TimeUnit.SECONDS.sleep(6);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							AutoMessageFrame.dispose();
+									
+							}
+						break;
 					}
-					break;
 				}
-			} catch (HeadlessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (SecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

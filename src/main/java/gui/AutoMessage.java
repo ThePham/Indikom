@@ -63,8 +63,22 @@ public class AutoMessage extends JPanel {
 		textArea.addMouseListener(new MouseAdapter(){
             @Override
             public void mouseClicked(MouseEvent e){
-               System.out.println("pouzivatel klikol na spravu"); 
-               textArea.setText(wholeMessage);
+               //System.out.println("pouzivatel klikol na spravu"); 
+            	
+            	String mouseBtn = "";
+            	
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                	System.out.println("LMB");
+                	mouseBtn = "Left";
+                }
+          
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                	System.out.println("RMB");	
+                	mouseBtn = "Right";
+                	
+                }
+               
+               //textArea.setText(wholeMessage);
              
                FileReader saveRead;
                FileWriter saveWriter = null;
@@ -73,7 +87,7 @@ public class AutoMessage extends JPanel {
             	   saveWriter = new FileWriter(getUserDataDirectory() + "click_info.txt", true);
             	   
             	   long timeStamp = System.currentTimeMillis() / 1000L;
-            	   saveWriter.write(Long.toString(timeStamp) + "\n");
+            	   saveWriter.write(Long.toString(timeStamp) + " " + mouseBtn + "\n");
             	   if (finalMessage.getFirst_m_words() == true){
             		   saveWriter.write("first m words\n");
             	   }            	   

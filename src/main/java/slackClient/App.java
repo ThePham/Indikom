@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 import com.ullink.slack.simpleslackapi.SlackSession;
@@ -18,6 +19,8 @@ import model.FileEvent;
 import model.Resource;
 import net.jeremybrooks.knicker.AccountApi;
 import net.jeremybrooks.knicker.KnickerException;
+import net.jeremybrooks.knicker.WordApi;
+import net.jeremybrooks.knicker.dto.Definition;
 import net.jeremybrooks.knicker.dto.TokenStatus;
 
 
@@ -28,6 +31,7 @@ public class App
 	
 	static String GHToken;
 	static String GHUsername;
+	static String slackUsername;
 	
 	static boolean useWordnik = false;
 	
@@ -52,8 +56,9 @@ public class App
 				GHUsername = br.readLine();
 				GHToken = br.readLine();
 				
+				
 				//Wordnik 
-		    	//System.setProperty("WORDNIK_API_KEY" , "");
+		    	//System.setProperty("WORDNIK_API_KEY" , "95ce83573b741a57740080102280a90a94fc04e08f9f8abb4");
 				String wordnikApi = br.readLine();
 				if (wordnikApi.length() > 2) {
 					System.setProperty("WORDNIK_API_KEY" , wordnikApi);
@@ -62,9 +67,11 @@ public class App
 				else 
 					useWordnik = false;
 		    	
+				slackUsername = br.readLine();
+				
 		    	/*
 		    	if (System.getProperty("WORDNIK_API_KEY").isEmpty()) {
-		    		System.setProperty("WORDNIK_API_KEY" , "");
+		    		System.setProperty("WORDNIK_API_KEY" , "95ce83573b741a57740080102280a90a94fc04e08f9f8abb4");
 		    	}
 		    	*/
 
@@ -81,25 +88,26 @@ public class App
 			
 			Timer time = new Timer(); 
 			ActivityTrackingTask trackingTask = new ActivityTrackingTask(); 
-			time.schedule(trackingTask, 0, 600*1000); 
+			time.schedule(trackingTask, 0, 3600*1000); //How often context updates, first number is seconds
 			
 	    	if (useWordnik) {
 		    	// check the status of the API key
 		    	TokenStatus status = null;
 				try {
 					status = AccountApi.apiTokenStatus();
+			    	if (status.isValid()) {
+			    	    System.out.println("API key is valid.");
+			    	} else {
+			    	    System.out.println("API key is invalid!");
+			    	    useWordnik = false;
+			    	}
 				} catch (KnickerException e) {
 					e.printStackTrace();
 				}
-		    	if (status.isValid()) {
-		    	    System.out.println("API key is valid.");
-		    	} else {
-		    	    System.out.println("API key is invalid!");
-		    	    useWordnik = false;
-		    	}
 	    	}
 	    	else 
 	    		System.out.println("Not using Wordnik thesaurus");
+	    	
 	    	
 	        EventQueue.invokeLater(new Runnable() {
 				public void run() {
@@ -138,5 +146,9 @@ public class App
     
     public static boolean getUseWordnik() {
 	    return useWordnik;
+	}
+    
+    public static String getSlackUsername() {
+	    return slackUsername;
 	}
 }

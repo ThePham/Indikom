@@ -23,12 +23,9 @@ import com.google.gson.JsonParser;
 
 public class MSTranslator {
 
-// **********************************************
-// *** Update or verify the following values. ***
-// **********************************************
 
-// Replace the subscriptionKey string value with your valid subscription key.
-    private static String subscriptionKey = "";
+	// Replace the subscriptionKey string value with your valid subscription key.
+    private static String subscriptionKey = "9449493227a3402fa8c5231a86a4d185";
 
     private static String host = "https://api.cognitive.microsofttranslator.com";
     private static String translatePath = "/translate?api-version=3.0";
@@ -91,7 +88,6 @@ public class MSTranslator {
     public static String callTranslate(String inputString) {
         try {
             String response = translate(inputString);
-            //System.out.println(prettify (response));
             String response2 = response.substring(1, response.length()-1);
 	        
             JsonParser jsonParser = new JsonParser();
@@ -109,7 +105,7 @@ public class MSTranslator {
         return "";
     }
     
-    public static String DictionaryLookup () throws Exception {
+    public static String DictionaryLookup() throws Exception {
         URL url = new URL (host + dictLookupPath + params);
 
         List<RequestBody> objList = new ArrayList<RequestBody>();
@@ -119,15 +115,4 @@ public class MSTranslator {
         return post(url, content);
     }
     
-    /*
-    public static void main(String[] args) {
-    	try {
-            String response = DictionaryLookup ();
-            System.out.println (prettify (response));
-        }
-        catch (Exception e) {
-            System.out.println (e);
-        }
-    }
-    */
 }

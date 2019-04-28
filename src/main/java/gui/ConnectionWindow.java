@@ -29,6 +29,7 @@ public class ConnectionWindow extends JFrame {
 	private JTextField textFieldGHUsername;
 	private JTextField textFieldGHToken;
 	private JTextField textFieldWordnik;
+	private JTextField textFieldSlackName;
 
 	
 	/**
@@ -39,7 +40,7 @@ public class ConnectionWindow extends JFrame {
 		setResizable(false);
 		setTitle("Connection settings");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 400);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -58,15 +59,20 @@ public class ConnectionWindow extends JFrame {
 		
 		textFieldWordnik = new JTextField();
 		textFieldWordnik.setColumns(10);
+		
+		textFieldSlackName = new JTextField();
+		textFieldSlackName.setColumns(10);
 			
 		JLabel lblToken = new JLabel("Token:");
 		
-		JLabel lblTokenRabbit = new JLabel("Rabbit location (e.g. /Users/phamv/Rabbit/C.Users.phamv.workspace/):");
+		JLabel lblTokenRabbit = new JLabel("User activity location (e.g. /Users/phamv/Rabbit/C.Users.phamv.workspace/):");
 		
 		JLabel lblgithubUser = new JLabel("Github username:");
 		JLabel lblgithubToken = new JLabel("Github oauth token:");
 		
 		JLabel lblWordnik= new JLabel("Wordnik API key (leave empty to not use Wordnik thesaurus):");
+		
+		JLabel lblSlackName = new JLabel("Slack username:");
 		
 		JButton btnOk = new JButton("OK");
 		
@@ -100,6 +106,10 @@ public class ConnectionWindow extends JFrame {
 						.addComponent(lblWordnik)
 						.addContainerGap())
 				.addComponent(textFieldWordnik, GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
+				.addGroup(gl_contentPane.createSequentialGroup()
+						.addComponent(lblSlackName)
+						.addContainerGap())
+				.addComponent(textFieldSlackName, GroupLayout.DEFAULT_SIZE, 924, Short.MAX_VALUE)
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -119,6 +129,9 @@ public class ConnectionWindow extends JFrame {
 					.addComponent(lblWordnik)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(textFieldWordnik, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(lblSlackName)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(textFieldSlackName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnOk)
@@ -146,6 +159,9 @@ public class ConnectionWindow extends JFrame {
 				
 				line = br.readLine();
 				textFieldWordnik.setText(line);
+				
+				line = br.readLine();
+				textFieldSlackName.setText(line);
 			}
 		} catch (Exception ex) {
 			
@@ -173,6 +189,7 @@ public class ConnectionWindow extends JFrame {
 						fw.write(textFieldGHUsername.getText() + System.lineSeparator());
 						fw.write(textFieldGHToken.getText() + System.lineSeparator());
 						fw.write(textFieldWordnik.getText() + System.lineSeparator());
+						fw.write(textFieldSlackName.getText() + System.lineSeparator());
 						
 					} catch (IOException e1) {
 						System.out.println("Unable to write connection token.");

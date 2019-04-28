@@ -17,7 +17,7 @@ Class-Path: lib/simple-slack-api-0.6.0.jar lib/httpclient-4.4.jar lib/
  ipse.egit.github.core-2.1.5.jar lib/github-api-1.94.jar lib/commons-l
  ang3-3.7.jar lib/commons-codec-1.7.jar lib/jackson-databind-2.9.2.jar
   lib/jackson-annotations-2.9.0.jar lib/jackson-core-2.9.2.jar lib/com
- mons-io-1.4.jar lib/knicker-2.4.1.jar
+ mons-io-1.4.jar lib/knicker-2.4.1.jar lib/super-csv-2.4.0.jar
 Build-Jdk: 1.8.0_121
 Created-By: Maven Integration for Eclipse
 Main-Class: slackClient.App
